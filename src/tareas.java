@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -6,16 +8,16 @@ import java.util.Set;
 public class tareas {
 
     static Scanner sc = new Scanner(System.in);
-    static Map<String, String> tareas = new HashMap<>();
+    static Map<String, Map<String, Object>> tareas = new HashMap<>();
 
 
     public static void verTareas(){
         int eleccion;
-        Set<Map.Entry<String, String>> entradas = tareas.entrySet();
+        Set<Map.Entry<String, Map<String, Object>>> entradas = tareas.entrySet();
         if (tareas.isEmpty()){
             System.out.println("No hay tareas");
         }else {
-            for (Map.Entry<String, String> entrada : entradas) {
+            for (Map.Entry<String, Map<String, Object>> entrada : entradas) {
                 System.out.println("Titulo: " + entrada.getKey() + ", descripcion: " + entrada.getValue());
             }
         }
@@ -28,7 +30,7 @@ public class tareas {
 
 
 
-    public static void agregarTarea(String titulo, String descripcion){
+    public static void agregarTarea(String titulo, String descripcion, LocalDate fecha){
         int response;
         String tituloNuevo;
         if (tareas.containsKey(titulo)){
@@ -41,14 +43,13 @@ public class tareas {
                 case 1:
                     System.out.println("Titulo nuevo:");
                     tituloNuevo = sc.nextLine();
-                    tareas.put(tituloNuevo, descripcion);
+                    tareas.put(tituloNuevo, Map.of("descripcion", descripcion, "fecha", fecha));
                     tareas.remove(titulo);
                     System.out.println("tarea agregada");
                     Menu.showMenu();
                     break;
                 case 2:
-                    //falta esto y ya
-                    tareas.put(titulo, descripcion);
+                    tareas.put(titulo, Map.of("descripcion", descripcion, "fecha", fecha));
                     System.out.println("tarea sobreescrita con exito");
                     Menu.showMenu();
                     break;
@@ -57,7 +58,7 @@ public class tareas {
                     break;
             }
         }else{
-            tareas.put(titulo, descripcion);
+            tareas.put(titulo, Map.of("descripcion", descripcion, "fecha", fecha));
             System.out.println("tarea agregada");
             Menu.showMenu();
         }
@@ -112,4 +113,40 @@ public class tareas {
         }while (response != 0);
         Menu.showMenu();
     }
+
+    public static LocalDate leerFecha() {
+        int año;
+        int mes;
+        int dia;
+        while (true) {
+            try {
+                do {
+                System.out.print("Año: ");
+                año = Integer.parseInt(sc.nextLine());
+
+                System.out.print("Mes: ");
+                mes = Integer.parseInt(sc.nextLine());
+
+                System.out.print("Día: ");
+                dia = Integer.parseInt(sc.nextLine());
+                    if (año < 2025){
+                        System.out.println("Año invalido");
+                    }
+                    if (mes < 1 || mes > 12){
+                        System.out.println("mes invalido");
+                    }
+                    if (dia < 1 || dia > 31){
+                        System.out.println("Dia invalido");
+                    }
+            }while (año < 2025 || mes < 1 || mes > 12 || dia < 1 || dia > 31);
+                // Crear y retornar la fecha
+                return LocalDate.of(año, mes, dia);
+            } catch (DateTimeParseException | IllegalArgumentException e) {
+                System.out.println("Error: Fecha inválida. Intenta de nuevo.");
+            }
+        }
+    }
+
 }
+
+

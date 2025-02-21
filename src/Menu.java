@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Menu {
@@ -22,7 +23,6 @@ public class Menu {
                 case 1:
                     System.out.println("ver");
                     tareas.verTareas();
-                    response = 0;
                     break;
                 case 2:
                     System.out.println("agregar");
@@ -30,25 +30,24 @@ public class Menu {
                     titulo = sc.nextLine();
                     System.out.println("Descripcion: ");
                     String descripcion = sc.nextLine();
-                    tareas.agregarTarea(titulo, descripcion);
-                    response = 0;
+                    // Leer la fecha usando el método separado
+                    System.out.println("Ingresa la fecha:");
+                    LocalDate fecha = tareas.leerFecha();
+                    tareas.agregarTarea(titulo, descripcion, fecha);
                     break;
                 case 3:
                     System.out.println("eliminar\n");
                     System.out.println("Titulo de la tarea que desea eliminar: ");
                     titulo = sc.nextLine();
                     tareas.eliminarTarea(titulo);
-                    response = 0;
                     break;
                 case 4:
                     tareas.eliminarAllTareas();
-                    response = 0;
                     break;
                 case 5:
                     System.out.println("Titulo de la tarea que desea buscar: ");
                     titulo = sc.nextLine();
                     tareas.buscarTarea(titulo);
-                    response = 0;
                     break;
                 case 0:
                     System.out.println("Thank you for you visit");
