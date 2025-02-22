@@ -1,12 +1,10 @@
 import java.time.LocalDate;
 import java.util.Scanner;
-
+//class menu
 public class Menu {
     public static void showMenu(){
 
-        System.out.println("Welcome to My Appointments");
-        System.out.println("Selecciona la opción deseada");
-
+        System.out.println("\n--- Menú de Tareas ---");
         int response = 0;
         do {
             System.out.println("1.Ver tareas");
@@ -21,39 +19,40 @@ public class Menu {
             String titulo;
             switch (response){
                 case 1:
-                    System.out.println("ver");
+                    System.out.println("\n--- Ver tareas ---");
                     tareas.verTareas();
                     break;
                 case 2:
-                    System.out.println("agregar");
-                    System.out.println("Titulo: ");
+                    System.out.println("\n--- Agregar tarea ---");
+                    System.out.print("Título: ");
                     titulo = sc.nextLine();
-                    System.out.println("Descripcion: ");
+                    System.out.print("Descripción: ");
                     String descripcion = sc.nextLine();
-                    // Leer la fecha usando el método separado
                     System.out.println("Ingresa la fecha:");
                     LocalDate fecha = tareas.leerFecha();
                     tareas.agregarTarea(titulo, descripcion, fecha);
                     break;
                 case 3:
-                    System.out.println("eliminar\n");
-                    System.out.println("Titulo de la tarea que desea eliminar: ");
+                    System.out.println("\n--- Eliminar tarea ---");
+                    System.out.print("Título de la tarea que desea eliminar: ");
                     titulo = sc.nextLine();
                     tareas.eliminarTarea(titulo);
                     break;
                 case 4:
+                    System.out.println("\n--- Eliminar todas las tareas ---");
                     tareas.eliminarAllTareas();
                     break;
                 case 5:
-                    System.out.println("Titulo de la tarea que desea buscar: ");
+                    System.out.println("\n--- Buscar tarea ---");
+                    System.out.print("Título de la tarea que desea buscar: ");
                     titulo = sc.nextLine();
                     tareas.buscarTarea(titulo);
                     break;
                 case 0:
-                    System.out.println("Thank you for you visit");
+                    System.out.println("\nGracias por usar la aplicación. ¡Hasta luego!");
                     break;
                 default:
-                    System.out.println("Please select a correct answer");
+                    System.out.println("\nOpción no válida. Intenta de nuevo.");
             }
         }while (response != 0);
     }
