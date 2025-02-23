@@ -10,29 +10,20 @@ import java.util.Set;
 public class tareas {
 
     static Scanner sc = new Scanner(System.in);
-    static Map<String, Map<String, Object>> tareas = new HashMap<>();
+    static Map<String, Map<String, Object>> tareasSession = new HashMap<>();
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
     public static void verTareas(){
         int eleccion;
-        Set<Map.Entry<String, Map<String, Object>>> entradas = tareas.entrySet();
-        if (tareas.isEmpty()){
-            System.out.println("No hay tareas");
-        }else {
-            for (Map.Entry<String, Map<String, Object>> entrada : entradas) {
-                String titulo = entrada.getKey(); // Obtener el título
-                Map<String, Object> detalles = entrada.getValue(); // Obtener los detalles
-
-                // Acceder a los elementos dentro del Map de detalles
-                String descripcion = (String) detalles.get("descripcion");
-                LocalDate fecha = (LocalDate) detalles.get("fecha");
-
-                // Mostrar la información
-                System.out.println("Título: " + titulo);
-                System.out.println("Descripción: " + descripcion);
-                System.out.println("Fecha: " + fecha.format(formatter));
-                System.out.println(); // Separador
+        if (tareasSession.isEmpty()) {
+            System.out.println("No hay tareas registradas.");
+        } else {
+            for (Map.Entry<String, Map<String, Object>> entrada : tareasSession.entrySet()) {
+                System.out.println("Título: " + entrada.getKey());
+                System.out.println("Descripción: " + entrada.getValue().get("descripcion"));
+                System.out.println("Fecha: " + entrada.getValue().get("fecha"));
+                System.out.println();
             }
         }
         do {
@@ -44,48 +35,61 @@ public class tareas {
 
 
     public static void agregarTarea(String titulo, String descripcion, LocalDate fecha){
+        Map<String, Object> detalles = new HashMap<>();
         int response;
-        String tituloNuevo;
-        if (tareas.containsKey(titulo)){
+        if (tareasSession.containsKey(titulo)){
             System.out.println("Titulo de tarea ya exites:");
-            System.out.println(tareas.get(titulo));
+            System.out.println(tareasSession.get(titulo));
             System.out.println("\n1-cambiar titulo \n2-sobreecribir tarea\n0-salir");
             response = sc.nextInt();
             sc.nextLine();
             switch (response){
                 case 1:
                     System.out.println("Titulo nuevo:");
-                    tituloNuevo = sc.nextLine();
-                    tareas.put(tituloNuevo, Map.of("descripcion", descripcion, "fecha", fecha));
-                    tareas.remove(titulo);
+                    titulo = sc.nextLine();
+                    detalles.put("descripcion", descripcion);
+                    detalles.put("fecha", fecha);
+                    tareasSession.put(titulo, detalles);
+
+                    // Guardar las tareas en el archivo
+                    gestorArchivos.guardarTareas(tareasSession);
                     System.out.println("tarea agregada");
                     break;
                 case 2:
-                    tareas.put(titulo, Map.of("descripcion", descripcion, "fecha", fecha));
+                    tareasSession.put(titulo, Map.of("descripcion", descripcion, "fecha", fecha));
                     System.out.println("tarea sobreescrita con exito");
+
+                    // Guardar las tareas en el archivo
+                    gestorArchivos.guardarTareas(tareasSession);
                     break;
                 case 0:
                     break;
             }
         }else{
-            tareas.put(titulo, Map.of("descripcion", descripcion, "fecha", fecha));
-            System.out.println("tarea agregada");
+            detalles.put("descripcion", descripcion);
+            detalles.put("fecha", fecha);
+            tareasSession.put(titulo, detalles);
+            System.out.println("Tarea agregada: " + titulo);
+
+            // Guardar las tareas en el archivo
+            gestorArchivos.guardarTareas(tareasSession);
         }
 
     }
 
     public static void eliminarTarea(String titulo){
-        if (tareas.containsKey(titulo)){
-            System.out.println("titulo: "+titulo+"\ndescripcion: "+tareas.get(titulo));
+        if (tareasSession.containsKey(titulo)){
+            System.out.println("titulo: "+titulo+"\ndescripcion: "+tareasSession.get(titulo));
             int eleccion;
             do {
                 System.out.println("Eliminar tarea? \n1-si \n0-regresar");
                 eleccion = sc.nextInt();
                 switch (eleccion){
                     case 1:
-                        tareas.remove(titulo);
+                        tareasSession.remove(titulo);
                         System.out.println("tarea eliminada");
                         eleccion = 0;
+                        gestorArchivos.guardarTareas(tareasSession);
                         break;
                     case 0:
                     default:
@@ -100,20 +104,22 @@ public class tareas {
     }
 
     public static void eliminarAllTareas(){
-        tareas.clear();
+        tareasSession.clear();
+        // Guardar las tareas en el archivo
+        gestorArchivos.guardarTareas(tareasSession);
         System.out.println("Todas las tareas han sido eliminadas.");
     }
 
     public static void buscarTarea(String titulo){
         int response;
         System.out.println("Descripcion");
-        if (tareas.get(titulo) != null){
-            Map<String, Object> detalles = tareas.get(titulo);
+        if (tareasSession.get(titulo) != null){
+            Map<String, Object> detalles = tareasSession.get(titulo);
             // Acceder a los elementos dentro del Map de detalles
             String descripcion = (String) detalles.get("descripcion");
             LocalDate fecha = (LocalDate) detalles.get("fecha");
 
-            System.out.println("Descripxion: "+descripcion);
+            System.out.println("Descripcion: "+descripcion);
             System.out.println("Fecha: "+fecha.format(formatter));
         }else {
             System.out.println("No existe tarea con ese titulo");
@@ -172,6 +178,11 @@ public class tareas {
                 System.out.println("Fecha inválida. Intenta de nuevo.");
             }
         }
+    }
+
+    // Método para cargar las tareas al iniciar el programa
+    public static void cargarTareasIniciales() {
+        tareasSession = gestorArchivos.cargarTareas();
     }
 
 }

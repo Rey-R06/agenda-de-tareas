@@ -3,13 +3,15 @@ import java.util.Scanner;
 //class menu
 public class Menu {
     public static void showMenu(){
+        // Cargar las tareas al iniciar el programa
+        tareas.cargarTareasIniciales();
 
         System.out.println("\n--- Menú de Tareas ---");
         int response = 0;
         do {
             System.out.println("1.Ver tareas");
             System.out.println("2.Agregar tareas");
-            System.out.println("3.Eliminar tareas");
+            System.out.println("3.Eliminar 1 tarea");
             System.out.println("4.Eliminar todas las tareas");
             System.out.println("5.Buscar tarea");
             System.out.println("0. Salir");
