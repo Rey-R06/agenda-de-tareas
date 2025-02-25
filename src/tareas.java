@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -34,7 +35,7 @@ public class tareas {
 
 
 
-    public static void agregarTarea(String titulo, String descripcion, LocalDate fecha){
+    public static void agregarTarea(String titulo, String descripcion, LocalDate fecha) {
         Map<String, Object> detalles = new HashMap<>();
         int response;
         if (tareasSession.containsKey(titulo)){
@@ -103,7 +104,7 @@ public class tareas {
 
     }
 
-    public static void eliminarAllTareas(){
+    public static void eliminarAllTareas() {
         tareasSession.clear();
         // Guardar las tareas en el archivo
         gestorArchivos.guardarTareas(tareasSession);

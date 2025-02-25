@@ -1,8 +1,9 @@
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 //class menu
 public class Menu {
-    public static void showMenu(){
+    public static void showMenu() {
         // Cargar las tareas al iniciar el programa
         tareas.cargarTareasIniciales();
 
